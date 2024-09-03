@@ -1,6 +1,7 @@
-require 'rainbow'
+require_relative './colors'
 
 class SecretCode
+  include Colors
   @@COLORS = %i[red green blue yellow black silver magenta cyan]
 
   def initialize(color1, color2, color3, color4)
@@ -16,6 +17,6 @@ class SecretCode
   end
 
   def to_s
-    "| #{color1} | #{color2} | #{color3} | #{color4} |"
+    "| #{colorize(color1)} | #{colorize(color2)} | #{colorize(color3)} | #{colorize(color4)} |"
   end
 end
