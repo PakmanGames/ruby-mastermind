@@ -1,4 +1,4 @@
-require_relative './colors'
+require_relative 'colors'
 
 class SecretCode
   include Colors
