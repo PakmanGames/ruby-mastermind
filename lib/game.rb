@@ -1,17 +1,22 @@
 require_relative 'player'
+require_relative 'secret_code'
 
 class Game
   attr_reader :code_maker, :code_breaker
+  attr_accessor :secret_code
 
   def initialize(code_maker, code_breaker)
     @code_maker = code_maker
     @code_breaker = code_breaker
+    @secret_code = nil
   end
 
   def play_game
     puts "#{code_maker.name} (Code Maker) vs #{code_breaker.name} (Code Breaker)"
-    nil unless code_maker.human
-    # logic to make secret code
+    return if code_maker.human
+
+    puts "#{code_maker.name} create a secret code that #{code_breaker.name} will try to guess."
+    secret_code = SecretCode.create_new_code
 
     # play round logic
   end
@@ -32,7 +37,7 @@ class Game
   def self.check_gamemode(gamemode)
     case gamemode.to_i
     when 1
-      # human vs human
+      Game.new(Player.new(true), Player.new(true))
     when 2
       # computer vs human
       Game.new(Player.new(false), Player.new(true))

@@ -16,6 +16,20 @@ class SecretCode
     SecretCode.new(@@COLORS.sample, @@COLORS.sample, @@COLORS.sample, @@COLORS.sample)
   end
 
+  def self.create_new_code
+    puts 'You can create a code from 4 of the following colors: '
+    puts(@@COLORS)
+    color = String.new
+    code = []
+    until @@COLORS.include?(color.to_sym) && code.length == 4
+      puts "Enter a code from this list: #{@@COLORS}"
+      color = gets.chomp
+      code.push(color) if @@COLORS.include?(color.to_sym)
+      puts code
+    end
+    SecretCode.new(code[0].to_sym, code[1].to_sym, code[2].to_sym, code[3].to_sym)
+  end
+
   def to_s
     "| #{colorize(color1)} | #{colorize(color2)} | #{colorize(color3)} | #{colorize(color4)} |"
   end
