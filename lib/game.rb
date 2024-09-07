@@ -13,10 +13,16 @@ class Game
 
   def play_game
     puts "#{code_maker.name} (Code Maker) vs #{code_breaker.name} (Code Breaker)"
-    return if code_maker.human
 
-    puts "#{code_maker.name} create a secret code that #{code_breaker.name} will try to guess."
-    secret_code = SecretCode.create_new_code
+    if code_maker.human
+      puts "#{code_maker.name} create a secret code that #{code_breaker.name} will try to guess."
+      secret_code = SecretCode.enter_code
+    elsif !code_maker.human
+      secret_code = SecretCode.generate_secret_code
+    end
+
+    # temperary for testing
+    puts secret_code
 
     # play round logic
   end
@@ -37,10 +43,9 @@ class Game
   def self.check_gamemode(gamemode)
     case gamemode.to_i
     when 1
-      Game.new(Player.new(true), Player.new(true))
+      Game.new(Player.new(true, true), Player.new(true, false))
     when 2
-      # computer vs human
-      Game.new(Player.new(false), Player.new(true))
+      Game.new(Player.new(false, true), Player.new(true, false))
     when 3
       # computer vs computer
     end

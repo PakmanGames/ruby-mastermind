@@ -8,7 +8,7 @@ class SecretCode < Code
     superclass.create_new_code(@@COLORS.sample, @@COLORS.sample, @@COLORS.sample, @@COLORS.sample)
   end
 
-  def self.enter_secret_code
+  def self.enter_code
     puts 'You can create a code from 4 of the following colors: '
     puts @@COLORIZED_COLORS
     color = String.new
