@@ -13,8 +13,10 @@ class SecretCode < Code
     puts @@COLORIZED_COLORS
     color = String.new
     code = []
+    sleep(0.5)
+    puts "\n"
     until @@COLORS.include?(color.to_sym) && code.length == 4
-      puts "Enter a code from this list: #{@@COLORIZED_COLORS}"
+      puts "Enter a color from this list: #{@@COLORIZED_COLORS}"
       color = gets.chomp
       code.push(color) if @@COLORS.include?(color.to_sym)
     end

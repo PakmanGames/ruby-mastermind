@@ -1,30 +1,44 @@
 require_relative 'player'
 require_relative 'secret_code'
+require_relative 'pins'
 
 class Game
-  attr_reader :code_maker, :code_breaker
-  attr_accessor :secret_code
-
   def initialize(code_maker, code_breaker)
     @code_maker = code_maker
     @code_breaker = code_breaker
     @secret_code = nil
+    @current_guess = Code.new([], [])
   end
+  attr_reader :code_maker, :code_breaker
+  attr_accessor :secret_code, :current_guess
 
   def play_game
     puts "#{code_maker.name} (Code Maker) vs #{code_breaker.name} (Code Breaker)"
 
     if code_maker.human
       puts "#{code_maker.name} create a secret code that #{code_breaker.name} will try to guess."
-      secret_code = SecretCode.enter_code
+      puts "Make sure you remember the code, you won't be able to see it again!"
+      @secret_code = SecretCode.enter_code
+      puts "\n" * 100
     elsif !code_maker.human
-      secret_code = SecretCode.generate_secret_code
+      @secret_code = SecretCode.generate_secret_code
     end
 
     # temperary for testing
     puts secret_code
 
+    puts "Code generated! Now let's play!"
+    sleep(1)
+
     # play round logic
+    play_round until secret_code.code_data[:colors] == current_guess.code_data[:colors]
+  end
+
+  def play_round
+    puts "#{code_breaker.name} guess what the secret code might be: "
+    current_guess = SecretCode.enter_code
+    pins = Pins.generate_pins(secret_code, current_guess)
+    puts Pins.display(pins)
   end
 
   def self.choose_game
