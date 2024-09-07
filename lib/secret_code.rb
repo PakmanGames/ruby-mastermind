@@ -1,36 +1,29 @@
-require_relative 'colors'
+require_relative 'code'
 
-class SecretCode
-  include Colors
+class SecretCode < Code
   @@COLORS = %i[red green blue yellow black silver magenta cyan]
-
-  def initialize(color1, color2, color3, color4)
-    @color1 = color1
-    @color2 = color2
-    @color3 = color3
-    @color4 = color4
-  end
-  attr_reader :color1, :color2, :color3, :color4
+  @@COLORIZED_COLORS = superclass.colorize(@@COLORS).inject('-') { |acc, curr| "#{acc + curr}-" }
 
   def self.generate_secret_code
-    SecretCode.new(@@COLORS.sample, @@COLORS.sample, @@COLORS.sample, @@COLORS.sample)
+    superclass.create_new_code(@@COLORS.sample, @@COLORS.sample, @@COLORS.sample, @@COLORS.sample)
   end
 
-  def self.create_new_code
+  def self.enter_secret_code
     puts 'You can create a code from 4 of the following colors: '
-    puts(@@COLORS)
+    puts @@COLORIZED_COLORS
     color = String.new
     code = []
     until @@COLORS.include?(color.to_sym) && code.length == 4
-      puts "Enter a code from this list: #{@@COLORS}"
+      puts "Enter a code from this list: #{@@COLORIZED_COLORS}"
       color = gets.chomp
       code.push(color) if @@COLORS.include?(color.to_sym)
-      puts code
     end
-    SecretCode.new(code[0].to_sym, code[1].to_sym, code[2].to_sym, code[3].to_sym)
+    create_new_code(code)
   end
 
-  def to_s
-    "| #{colorize(color1)} | #{colorize(color2)} | #{colorize(color3)} | #{colorize(color4)} |"
+  def self.create_new_code(code)
+    code.map!(&:to_sym)
+    rainbow_code = superclass.colorize(code)
+    Code.new(code, rainbow_code)
   end
 end
