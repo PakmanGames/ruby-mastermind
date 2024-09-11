@@ -1,6 +1,8 @@
 require_relative 'player'
 require_relative 'secret_code'
+require_relative 'board'
 require_relative 'pins'
+require 'pry-byebug'
 
 class Game
   def initialize(code_maker, code_breaker)
@@ -8,9 +10,10 @@ class Game
     @code_breaker = code_breaker
     @secret_code = nil
     @current_guess = Code.new([], [])
+    @board = Board.new(secret_code)
   end
   attr_reader :code_maker, :code_breaker
-  attr_accessor :secret_code, :current_guess
+  attr_accessor :secret_code, :current_guess, :board
 
   def play_game
     puts "#{code_maker.name} (Code Maker) vs #{code_breaker.name} (Code Breaker)"
@@ -22,6 +25,7 @@ class Game
       puts "\n" * 100
     elsif !code_maker.human
       @secret_code = SecretCode.generate_secret_code
+      board.secret_code = @secret_code
     end
 
     # temperary for testing
@@ -31,14 +35,16 @@ class Game
     sleep(1)
 
     # play round logic
-    play_round until secret_code.code_data[:colors] == current_guess.code_data[:colors]
+    play_round until board.check_winner
   end
 
   def play_round
-    puts "#{code_breaker.name} guess what the secret code might be: "
+    # binding.pry
+    puts "\n#{code_breaker.name} guess what the secret code might be: "
     current_guess = SecretCode.enter_code
     pins = Pins.generate_pins(secret_code, current_guess)
-    puts Pins.display(pins)
+    puts "\n#{current_guess} #{Pins.display(pins)}"
+    board.current_pins = pins[:pins]
   end
 
   def self.choose_game
