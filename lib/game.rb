@@ -11,9 +11,10 @@ class Game
     @secret_code = nil
     @current_guess = Code.new([], [])
     @board = Board.new(secret_code)
+    @turn = 0
   end
   attr_reader :code_maker, :code_breaker
-  attr_accessor :secret_code, :current_guess, :board
+  attr_accessor :secret_code, :current_guess, :board, :turn
 
   def play_game
     puts "#{code_maker.name} (Code Maker) vs #{code_breaker.name} (Code Breaker)"
@@ -35,15 +36,25 @@ class Game
     sleep(1)
 
     # play round logic
-    play_round until board.check_winner
+    play_round until board.check_winner || turn == 12
+    if board.check_winner
+      puts 'WINNER WE HAVE A WINNER'
+      puts "Congrats #{code_breaker.name} u win"
+    elsif turn == 12
+      puts 'oh no u have used all 12 turns and DIDNT WIN'
+    end
   end
 
   def play_round
+    @turn += 1
     # binding.pry
-    puts "\n#{code_breaker.name} guess what the secret code might be: "
+    puts "\nROUND #{turn}"
+    puts "#{code_breaker.name} guess what the secret code might be: "
     current_guess = SecretCode.enter_code
     pins = Pins.generate_pins(secret_code, current_guess)
-    puts "\n#{current_guess} #{Pins.display(pins)}"
+    results = "#{current_guess} #{Pins.display(pins)}"
+    board.moves.append(results)
+    board.moves.each { |move| puts "\n#{move}" }
     board.current_pins = pins[:pins]
   end
 
