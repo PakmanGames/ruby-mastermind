@@ -2,7 +2,6 @@ require_relative 'player'
 require_relative 'secret_code'
 require_relative 'board'
 require_relative 'pins'
-require 'pry-byebug'
 
 class Game
   def initialize(code_maker, code_breaker)
@@ -38,16 +37,17 @@ class Game
     # play round logic
     play_round until board.check_winner || turn == 12
     if board.check_winner
-      puts 'WINNER WE HAVE A WINNER'
-      puts "Congrats #{code_breaker.name} u win"
+      puts "\nCODE HAS BEEN BROKEN!!"
+      puts "Congratulations #{code_breaker.name} you successfully broke the code!"
     elsif turn == 12
-      puts 'oh no u have used all 12 turns and DIDNT WIN'
+      puts "\nUnfortunately, it looks like you weren't able to break the code :("
+      puts 'YOU LOSE!'
+      puts "The secret code was: #{secret_code}"
     end
   end
 
   def play_round
     @turn += 1
-    # binding.pry
     puts "\nROUND #{turn}"
     puts "#{code_breaker.name} guess what the secret code might be: "
     current_guess = SecretCode.enter_code
@@ -59,9 +59,10 @@ class Game
   end
 
   def self.choose_game
-    puts 'welcome to mastermind'
+    puts 'Welcome to Mastermind!'
+    puts 'The code breaker has 12 turns to break a code the code maker creates.'
     puts 'Which type of game do you want to play?'
-    puts '(Note that the first player will always be the codemaker)'
+    puts '(Note that the first player will always be the code maker)'
     puts 'Type the corresponding number to choose a game type: '
     gamemode = String.new
     until [1, 2, 3].include?(gamemode.to_i)
@@ -74,11 +75,17 @@ class Game
   def self.check_gamemode(gamemode)
     case gamemode.to_i
     when 1
+      # human vs human
       Game.new(Player.new(true, true), Player.new(true, false))
     when 2
+      # computer vs human
       Game.new(Player.new(false, true), Player.new(true, false))
     when 3
+      # human vs computer
+      Game.new(Plauer.new(true, true), Player.new(false, false))
+    when 4
       # computer vs computer
+      Game.new(Player.new(false, true), Player.new(false, false))
     end
   end
 end
