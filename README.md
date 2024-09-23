@@ -1,18 +1,10 @@
 # Ruby Mastermind Game
 
-[how to play mastermind](https://www.wikihow.com/Play-Mastermind)  
-[tik tok brainrot video explaination](https://www.youtube.com/watch?v=EF2oeSnTYgY)
+A console based game of Mastermind written in Ruby. The game utilizes the rainbow gem to create colourful output in the terminal. It follows the principles of OOP having separated each individual component into it's own class, containing related attributes.
 
-planning (PSUEDO CODE):  
-board display:  
-4 secret code colors at top  
-12 empty slots to be filled (with 4 hint pins next to each row)
+Learn how to play mastermind [here](https://www.wikihow.com/Play-Mastermind).  
+For those who would rather prefer a TikTok brainrott video version [here](https://www.youtube.com/watch?v=EF2oeSnTYgY).
 
-color selection choice at bottom
+To run the game make sure you have Ruby installed and then run `ruby main.rb` in the terminal.
 
-board class  
-code class (one instance for the secret code and one each time player makes guess)  
-hint pins class  
-game class  
-computer class  
-player class  
+Information about the dependencies can be found in the `Gemfile`
