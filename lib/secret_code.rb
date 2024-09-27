@@ -30,6 +30,7 @@ class SecretCode < Code
     # Loop until correct input and code length is reached
     until @@COLORS.include?(color.to_sym) && code.length == 4
       puts "Enter a color from this list: #{@@COLORIZED_COLORS}"
+      puts '(Please enter the colors one at a time)'
       color = gets.chomp
       code.push(color) if @@COLORS.include?(color.to_sym)
     end
