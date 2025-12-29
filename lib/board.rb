@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 ##
-# Board represents the game board, displayus all the codes entered and pins
+# Board represents the game board, displays all the codes entered and pins
 class Board
   attr_accessor :secret_code, :moves, :current_pins
 

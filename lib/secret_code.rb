@@ -6,15 +6,15 @@ require_relative 'code'
 # This class represents the secret code which will be hidden from the player as well as created to make guesses
 # Inherits from the Code class
 class SecretCode < Code
-  # Class variables as constants for each of the available colors
-  @@COLORS = %i[red green blue yellow black silver magenta cyan]
-  @@COLORIZED_COLORS = superclass.colorize(@@COLORS).inject('-') { |acc, curr| "#{acc + curr}-" }
+  # Class instance variables for available colors
+  @colors = %i[red green blue yellow black silver magenta cyan]
+  @colorized_colors = superclass.colorize(@colors).inject('-') { |acc, curr| "#{acc + curr}-" }
 
   # Generates a random secret code using the superclass method
   #
   # @return [Code Object] a secret code that has just been randomly created
   def self.generate_secret_code
-    superclass.create_new_code(@@COLORS.sample, @@COLORS.sample, @@COLORS.sample, @@COLORS.sample)
+    superclass.create_new_code(@colors.sample, @colors.sample, @colors.sample, @colors.sample)
   end
 
   # Creates a code based on players input
@@ -31,7 +31,7 @@ class SecretCode < Code
   # @return [Nil]
   def self.display_color_options
     puts 'You can create a code from 4 of the following colors: '
-    puts @@COLORIZED_COLORS
+    puts @colorized_colors
     sleep(0.5)
     puts "\n"
   end
@@ -42,10 +42,10 @@ class SecretCode < Code
   def self.collect_user_colors
     code = []
     color = String.new
-    until @@COLORS.include?(color.to_sym) && code.length == 4
+    until @colors.include?(color.to_sym) && code.length == 4
       prompt_for_color
       color = gets.chomp
-      code.push(color) if @@COLORS.include?(color.to_sym)
+      code.push(color) if @colors.include?(color.to_sym)
     end
     code
   end
@@ -54,7 +54,7 @@ class SecretCode < Code
   #
   # @return [Nil]
   def self.prompt_for_color
-    puts "Enter a color from this list: #{@@COLORIZED_COLORS}"
+    puts "Enter a color from this list: #{@colorized_colors}"
     puts '(Please enter the colors one at a time)'
   end
 

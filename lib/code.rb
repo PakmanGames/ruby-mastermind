@@ -39,7 +39,7 @@ class Code
 
   # Override to_s to make pretty output
   #
-  # @return [String] each colour separated by spaces and '|'
+  # @return [String] each color separated by spaces and '|'
   def to_s
     code_data[:rainbow_colors].inject('| ') { |acc, curr| "#{acc + curr} | " }
   end

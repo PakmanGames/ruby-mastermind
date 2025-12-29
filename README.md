@@ -2,7 +2,7 @@
 
 A console based game of Mastermind written in Ruby. The game utilizes the rainbow gem to create colourful output in the terminal.
 
-Learn how to play mastermind [here](https://www.wikihow.com/Play-Mastermind).  
+Learn how to play mastermind click [here](https://www.wikihow.com/Play-Mastermind).  
 For those who would rather prefer a TikTok brainrot video version click [here](https://www.youtube.com/watch?v=EF2oeSnTYgY) to learn more.
 
 ## Running the Game
