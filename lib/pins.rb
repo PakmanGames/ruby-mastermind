@@ -11,19 +11,22 @@ module Pins
   # +guess is the code breaker's guess at what the +secret_code might be
   # @return [Hash] represents the pins, colored and uncolored
   def self.generate_pins(secret_code, guess)
-    pins = []
-    guess.code_data[:colors].each_with_index do |color, index|
-      if color == secret_code.code_data.dig(:colors, index)
-        pins.push(:red) # Add red pin if color is correct and in the right spot
-      elsif secret_code.code_data[:colors].include?(color)
-        pins.push(:white) # Add silver pin if color is correct in the wrong spot
-      end
-    end
-    rainbow_pins = colorize(pins)
+    pins = build_pins(secret_code, guess)
     {
       pins: pins,
-      rainbow_pins: rainbow_pins
+      rainbow_pins: colorize(pins)
     }
+  end
+
+  def self.build_pins(secret_code, guess)
+    secret_colors = secret_code.code_data[:colors]
+    guess.code_data[:colors].map.with_index do |color, index|
+      if color == secret_colors[index]
+        :red # Add red pin if color is correct and in the right spot
+      elsif secret_colors.include?(color)
+        :white # Add white pin if color is correct in the wrong spot
+      end
+    end.compact
   end
 
   # Colorizes the pins

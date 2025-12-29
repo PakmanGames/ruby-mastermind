@@ -21,25 +21,46 @@ class SecretCode < Code
   #
   # @return [Code Object] a code created by the player
   def self.enter_code
+    display_color_options
+    code = collect_user_colors
+    create_new_code(code)
+  end
+
+  # Displays the color options to the player
+  #
+  # @return [Nil]
+  def self.display_color_options
     puts 'You can create a code from 4 of the following colors: '
     puts @@COLORIZED_COLORS
-    color = String.new
-    code = []
     sleep(0.5)
     puts "\n"
-    # Loop until correct input and code length is reached
+  end
+
+  # Collects the user's colors
+  #
+  # @return [Array] of strings representing the colors
+  def self.collect_user_colors
+    code = []
+    color = String.new
     until @@COLORS.include?(color.to_sym) && code.length == 4
-      puts "Enter a color from this list: #{@@COLORIZED_COLORS}"
-      puts '(Please enter the colors one at a time)'
+      prompt_for_color
       color = gets.chomp
       code.push(color) if @@COLORS.include?(color.to_sym)
     end
-    create_new_code(code)
+    code
+  end
+
+  # Prompts the user for a color
+  #
+  # @return [Nil]
+  def self.prompt_for_color
+    puts "Enter a color from this list: #{@@COLORIZED_COLORS}"
+    puts '(Please enter the colors one at a time)'
   end
 
   # Creates a new code from an array of symbols
   #
-  # @param [Array] of symbols representing the colors
+  # @param [Array] of strings representing the colors
   # @return [Code Object] represents the code the player just created
   def self.create_new_code(code)
     code.map!(&:to_sym)
