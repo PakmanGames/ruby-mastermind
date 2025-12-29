@@ -16,7 +16,7 @@ module Pins
       if color == secret_code.code_data.dig(:colors, index)
         pins.push(:red) # Add red pin if color is correct and in the right spot
       elsif secret_code.code_data[:colors].include?(color)
-        pins.push(:silver) # Add silver pin if color is correct in the wrong spot
+        pins.push(:white) # Add silver pin if color is correct in the wrong spot
       end
     end
     rainbow_pins = colorize(pins)

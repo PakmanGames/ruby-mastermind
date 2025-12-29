@@ -107,10 +107,6 @@ class Game
       # Computer vs Human
       Game.new(Player.new(false, true), Player.new(true, false))
     when 3
-      # TODO: human vs computer
-      puts 'Work in progress'
-      Game.new(Plauer.new(true, true), Player.new(false, false))
-    when 4
       # TODO: computer vs computer
       puts 'Work in progress'
       Game.new(Player.new(false, true), Player.new(false, false))
