@@ -75,31 +75,38 @@ class Game
     board.current_pins = pins[:pins]
   end
 
-  # Sets the gamemode
+  # Sets the game mode
   #
   # @return [Game Object] to be used as the mastermind game
   def self.choose_game
-    # Display welcome message and rules
+    display_welcome_message
+    game_mode = collect_game_mode_choice
+    check_game_mode(game_mode)
+  end
+
+  def self.display_welcome_message
     puts 'Welcome to Mastermind!'
     puts 'The code breaker has 12 turns to break a code the code maker creates.'
     puts 'Which type of game do you want to play?'
     puts '(Note that the first player will always be the code maker)'
     puts 'Type the corresponding number to choose a game type: '
-    gamemode = String.new
-    # Loop until user enters a valid gamemode
-    until [1, 2, 3].include?(gamemode.to_i)
-      puts "(1) Human vs Human\n(2) Computer vs Human\n(3) Computer vs Computer"
-      gamemode = gets.chomp
-    end
-    check_gamemode(gamemode)
   end
 
-  # Creates the game based on the selected gamemode
+  def self.collect_game_mode_choice
+    game_mode = String.new
+    until [1, 2, 3].include?(game_mode.to_i)
+      puts "(1) Human vs Human\n(2) Computer vs Human\n(3) Computer vs Computer"
+      game_mode = gets.chomp
+    end
+    game_mode
+  end
+
+  # Creates the game based on the selected game mode
   #
-  # @param [String] represents the chosen gamemode
+  # @param [String] represents the chosen game mode
   # @return [Game Object] to represent the mastermind game
-  def self.check_gamemode(gamemode)
-    case gamemode.to_i # Change to integer
+  def self.check_game_mode(game_mode)
+    case game_mode.to_i # Change to integer
     when 1
       # Human vs Human
       Game.new(Player.new(true, true), Player.new(true, false))
