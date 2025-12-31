@@ -64,15 +64,39 @@ class Game
   #
   # @return [Nil]
   def play_round
+    increment_turn_and_display
+    current_guess = code_breaker_guess
+    pins = generate_pins_for_guess(current_guess)
+    process_and_display_results(current_guess, pins)
+  end
+
+  def increment_turn_and_display
     @turn += 1
     puts "\nROUND #{turn}"
     puts "#{code_breaker.name} guess what the secret code might be: "
-    current_guess = SecretCode.enter_code # Get guess from code breaker
-    pins = Pins.generate_pins(secret_code, current_guess) # Create pins based on guess
-    results = "#{current_guess} #{Pins.display(pins)}"
+  end
+
+  def code_breaker_guess
+    SecretCode.enter_code
+  end
+
+  def generate_pins_for_guess(current_guess)
+    Pins.generate_pins(secret_code, current_guess)
+  end
+
+  def process_and_display_results(current_guess, pins)
+    results = format_guess_results(current_guess, pins)
     board.moves.append(results)
-    board.moves.each { |move| puts "\n#{move}" } # Display entire board (includes previous guesses and pins)
+    display_board
     board.current_pins = pins[:pins]
+  end
+
+  def format_guess_results(current_guess, pins)
+    "#{current_guess} #{Pins.display(pins)}"
+  end
+
+  def display_board
+    board.moves.each { |move| puts "\n#{move}" }
   end
 
   # Sets the game mode
