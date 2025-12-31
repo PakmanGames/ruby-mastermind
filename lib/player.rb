@@ -1,21 +1,19 @@
 # frozen_string_literal: true
 
-##
-# This class represents the player, which can be a human or not a human
+# Represents a player in the game, which can be either human or computer-controlled.
 class Player
   attr_reader :name, :human
 
-  ##
-  # Create a new player described by +human and +code_maker
+  # Create a new player
   #
-  # +human is a boolean representing whether the player is human or not.
-  # +code_maker is a boolean, determines whether this player is a code_maker
+  # @param [Boolean] human - whether the player is human or not
+  # @param [Boolean] code_maker - whether the player is a code maker or not
   def initialize(human, code_maker)
     @name = 'Computer'
     @human = human
     return unless human
 
-    # Gets the player name from console
+    # Prompt the player for their name
     puts "What's your name? #{code_maker ? '(Code Maker)' : '(Code Breaker)'}"
     @name = gets.chomp
   end

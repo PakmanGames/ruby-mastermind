@@ -2,14 +2,13 @@
 
 require 'rainbow'
 
-##
-# This module contains various methods necessary for creating the pins
+# Manages the generation and display of feedback pins based on the secret code and the player's guess.
 module Pins
-  # Create pins based on +secret_code and +guess
+  # Creates pins based on the secret code and the player's guess
   #
-  # @param [Array, Code Object], +secret_code is the code the code breaker guessed.
-  # +guess is the code breaker's guess at what the +secret_code might be
-  # @return [Hash] represents the pins, colored and uncolored
+  # @param [SecretCode] secret_code - the secret code to be guessed
+  # @param [Code] guess - the code the code breaker guessed
+  # @return [Hash] a hash containing the pins and the colored pins
   def self.generate_pins(secret_code, guess)
     pins = build_pins(secret_code, guess)
     {
@@ -18,6 +17,11 @@ module Pins
     }
   end
 
+  # Builds the pins based on the secret code and the player's guess
+  #
+  # @param [SecretCode] secret_code - the secret code to be guessed
+  # @param [Code] guess - the code the code breaker guessed
+  # @return [Array] an array of symbols representing the pins
   def self.build_pins(secret_code, guess)
     secret_colors = secret_code.code_data[:colors]
     guess.code_data[:colors].map.with_index do |color, index|
@@ -31,16 +35,16 @@ module Pins
 
   # Colorizes the pins
   #
-  # @param [Array] of colors as symbols
-  # @return [Array] of colored in pins
+  # @param [Array] colors - an array of symbols representing the colors
+  # @return [Array] an array of each color colored for nice output
   def self.colorize(colors)
     colors.map { |color| Rainbow(color).color(color).bg(:black).bright }
   end
 
   # Pretty format to display the pins
   #
-  # @param [Hash] representing the pins
-  # @return [String] of the color pins in a pretty format
+  # @param [Hash] pins - a hash containing the pins and the colored pins
+  # @return [String] a string representing the pins in a pretty format
   def self.display(pins)
     pins[:rainbow_pins].inject('-') { |acc, curr| "#{acc + curr}-" }
   end
