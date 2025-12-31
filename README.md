@@ -11,25 +11,31 @@ For those who would rather prefer a TikTok brainrot video version click [here](h
 # Make sure required gems are installed on your system
 bundle install
 
-# After gem dependencies are installed run:
-ruby main.rb
+# Run the project
+bundle exec bin/mastermind
 ```
 
 Information about the dependencies can be found in the `Gemfile`.
+
+(Note that running the project requires a Unix-based operating system or WSL)
 
 ## Project Structure
 
 ```text
 ruby-mastermind/
-├── main.rb              # Entry point for the game
-├── lib/                 # Core game classes
-│   ├── board.rb        # Board class - manages game board and moves
-│   ├── code.rb         # Code class - represents a code with 4 colors
-│   ├── game.rb         # Game class - main game logic and flow
-│   ├── pins.rb         # Pins module - generates feedback pins
-│   ├── player.rb       # Player class - represents a player (human/computer)
-│   └── secret_code.rb  # SecretCode class - handles secret code generation
+├── bin/
+│   └── mastermind      # Executable entry point for the game
+├── lib/
+│   ├── mastermind.rb   # Main module file
+│   └── mastermind/     # Core game classes
+│       ├── board.rb        # Board class - manages game board and moves
+│       ├── code.rb         # Code class - represents a code with 4 colors
+│       ├── game.rb         # Game class - main game logic and flow
+│       ├── pins.rb         # Pins module - generates feedback pins
+│       ├── player.rb       # Player class - represents a player (human/computer)
+│       └── secret_code.rb  # SecretCode class - handles secret code generation
 ├── Gemfile             # Ruby dependencies
+├── Gemfile.lock        # Locked dependency versions
 └── README.md           # Project documentation
 ```
 
