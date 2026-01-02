@@ -23,8 +23,8 @@ jobs:
           ruby-version: "3.3"
           bundler-cache: true
 
-      # - name: Run tests
-      #   run: bundle exec rspec
+      - name: Run tests
+        run: bundle exec rspec
 
       - name: Run linter
         run: bundle exec rubocop

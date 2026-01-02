@@ -30,6 +30,7 @@ ruby-mastermind/
 │   └── mastermind/     # Core game classes
 │       ├── board.rb        # Board class - manages game board and moves
 │       ├── code.rb         # Code class - represents a code with 4 colors
+        ├── game_display.rb # Game Display module - generates messages into the CLI
 │       ├── game.rb         # Game class - main game logic and flow
 │       ├── pins.rb         # Pins module - generates feedback pins
 │       ├── player.rb       # Player class - represents a player (human/computer)

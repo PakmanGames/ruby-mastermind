@@ -7,3 +7,5 @@ source 'https://rubygems.org'
 gem 'rainbow', '~> 3.1'
 
 gem 'rubocop', '~> 1.65'
+
+gem 'rspec', '~> 3.13'
