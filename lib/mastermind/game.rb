@@ -4,6 +4,7 @@ require_relative 'player'
 require_relative 'secret_code'
 require_relative 'board'
 require_relative 'pins'
+require_relative 'game_display'
 
 # Main mastermind game.
 # Holds the players, board state, turn count, guess state, and secret code.
@@ -28,17 +29,10 @@ class Game
   #
   # @return [Nil] - the game is played until the code is broken or the turn limit is reached
   def play_game
-    display_player_matchup
+    GameDisplay.player_matchup(code_maker, code_breaker)
     setup_secret_code
     play_rounds_until_complete
     display_game_result
-  end
-
-  # Displays the player matchup
-  #
-  # @return [Nil] - the player matchup is displayed
-  def display_player_matchup
-    puts "#{code_maker.name} (Code Maker) vs #{code_breaker.name} (Code Breaker)"
   end
 
   # Sets up the secret code
@@ -84,27 +78,10 @@ class Game
   # @return [Nil] - the game result is displayed
   def display_game_result
     if board.check_winner
-      display_win_message
+      GameDisplay.win_message(code_breaker, turn)
     elsif turn == 12
-      display_loss_message
+      GameDisplay.loss_message(secret_code)
     end
-  end
-
-  # Displays the win message
-  #
-  # @return [Nil] - the win message is displayed
-  def display_win_message
-    puts "\nCODE HAS BEEN BROKEN!!"
-    puts "Congratulations #{code_breaker.name} you successfully broke the code in #{turn} rounds!"
-  end
-
-  # Displays the loss message
-  #
-  # @return [Nil] - the loss message is displayed
-  def display_loss_message
-    puts "\nUnfortunately, it looks like you weren't able to break the code :("
-    puts 'YOU LOSE!'
-    puts "The secret code was: #{secret_code}"
   end
 
   # Plays a round of mastermind
@@ -122,8 +99,7 @@ class Game
   # @return [Nil] - the turn is incremented and the round number is displayed
   def increment_turn_and_display
     @turn += 1
-    puts "\nROUND #{turn}"
-    puts "#{code_breaker.name} guess what the secret code might be: "
+    GameDisplay.round_header(turn, code_breaker)
   end
 
   # Code breaker guesses the secret code
@@ -149,7 +125,7 @@ class Game
   def process_and_display_results(current_guess, pins)
     results = format_guess_results(current_guess, pins)
     board.moves.append(results)
-    display_board
+    GameDisplay.board(board)
     board.current_pins = pins[:pins]
   end
 
@@ -162,31 +138,13 @@ class Game
     "#{current_guess} #{Pins.display(pins)}"
   end
 
-  # Displays the board
-  #
-  # @return [Nil] - the board is displayed
-  def display_board
-    board.moves.each { |move| puts "\n#{move}" }
-  end
-
   # Sets the game mode
   #
   # @return [Game] - the game object
   def self.choose_game
-    display_welcome_message
+    GameDisplay.welcome_message
     game_mode = collect_game_mode_choice
     check_game_mode(game_mode)
-  end
-
-  # Displays the welcome message
-  #
-  # @return [Nil] - the welcome message is displayed
-  def self.display_welcome_message
-    puts 'Welcome to Mastermind!'
-    puts 'The code breaker has 12 turns to break a code the code maker creates.'
-    puts 'Which type of game do you want to play?'
-    puts '(Note that the first player will always be the code maker)'
-    puts 'Type the corresponding number to choose a game type: '
   end
 
   # Collects the game mode choice
