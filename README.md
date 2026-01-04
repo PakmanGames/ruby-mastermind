@@ -19,6 +19,23 @@ Information about the dependencies can be found in the `Gemfile`.
 
 (Note that running the project requires a Unix-based operating system or WSL)
 
+## Running the Tests
+
+The project uses RSpec for testing. To run the test suite:
+
+```bash
+# Run all tests
+bundle exec rspec
+
+# Run tests with documentation format
+bundle exec rspec --format documentation
+
+# Run a specific test file
+bundle exec rspec spec/mastermind/game_spec.rb
+```
+
+All test files are located in the `spec/` directory, mirroring the structure of the `lib/` directory.
+
 ## Project Structure
 
 ```text
@@ -30,11 +47,21 @@ ruby-mastermind/
 │   └── mastermind/     # Core game classes
 │       ├── board.rb        # Board class - manages game board and moves
 │       ├── code.rb         # Code class - represents a code with 4 colors
-        ├── game_display.rb # Game Display module - generates messages into the CLI
+│       ├── game_display.rb # Game Display module - generates messages into the CLI
 │       ├── game.rb         # Game class - main game logic and flow
 │       ├── pins.rb         # Pins module - generates feedback pins
 │       ├── player.rb       # Player class - represents a player (human/computer)
 │       └── secret_code.rb  # SecretCode class - handles secret code generation
+├── spec/
+│   ├── mastermind/     # Test files for game classes
+│   │   ├── board_spec.rb
+│   │   ├── code_spec.rb
+│   │   ├── game_display_spec.rb
+│   │   ├── game_spec.rb
+│   │   ├── pins_spec.rb
+│   │   ├── player_spec.rb
+│   │   └── secret_code_spec.rb
+│   └── spec_helper.rb  # RSpec configuration
 ├── Gemfile             # Ruby dependencies
 ├── Gemfile.lock        # Locked dependency versions
 └── README.md           # Project documentation
