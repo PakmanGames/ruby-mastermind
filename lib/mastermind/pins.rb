@@ -25,11 +25,24 @@ module Pins
   def self.build_pins(secret_code, guess)
     secret_colors = secret_code.code_data[:colors].dup
     guess_colors = guess.code_data[:colors]
-    pins = []
     matched_secret_indices = []
     matched_guess_indices = []
 
-    # First pass: find red pins
+    red_pins = find_red_pins(secret_colors, guess_colors, matched_secret_indices, matched_guess_indices)
+    white_pins = find_white_pins(secret_colors, guess_colors, matched_secret_indices, matched_guess_indices)
+
+    red_pins + white_pins
+  end
+
+  # Finds exact matches (red pins)
+  #
+  # @param [Array] secret_colors - the secret code colors
+  # @param [Array] guess_colors - the guess colors
+  # @param [Array] matched_secret_indices - array to track matched secret indices
+  # @param [Array] matched_guess_indices - array to track matched guess indices
+  # @return [Array] array of red pin symbols
+  def self.find_red_pins(secret_colors, guess_colors, matched_secret_indices, matched_guess_indices)
+    pins = []
     guess_colors.each_with_index do |color, index|
       next unless color == secret_colors[index]
 
@@ -37,24 +50,45 @@ module Pins
       matched_secret_indices << index
       matched_guess_indices << index
     end
+    pins
+  end
 
-    # Second pass: find white pins
+  # Finds color matches in wrong positions (white pins)
+  #
+  # @param [Array] secret_colors - the secret code colors
+  # @param [Array] guess_colors - the guess colors
+  # @param [Array] matched_secret_indices - array to track matched secret indices
+  # @param [Array] matched_guess_indices - array to track matched guess indices
+  # @return [Array] array of white pin symbols
+  def self.find_white_pins(secret_colors, guess_colors, matched_secret_indices, matched_guess_indices)
+    pins = []
     guess_colors.each_with_index do |color, guess_index|
       next if matched_guess_indices.include?(guess_index)
 
-      secret_colors.each_with_index do |secret_color, secret_index|
-        next if matched_secret_indices.include?(secret_index)
+      match_index = find_matching_secret_index(color, secret_colors, matched_secret_indices)
+      next unless match_index
 
-        next unless color == secret_color
-
-        pins << :white
-        matched_secret_indices << secret_index
-        matched_guess_indices << guess_index
-        break
-      end
+      pins << :white
+      matched_secret_indices << match_index
+      matched_guess_indices << guess_index
     end
-
     pins
+  end
+
+  # Finds the index of a matching secret color for the given guess color
+  #
+  # @param [Symbol] color - the guess color to match
+  # @param [Array] secret_colors - the secret code colors
+  # @param [Array] matched_secret_indices - array to track matched secret indices
+  # @return [Integer, nil] the index of the matching secret color, or nil if not found
+  def self.find_matching_secret_index(color, secret_colors, matched_secret_indices)
+    secret_colors.each_with_index do |secret_color, secret_index|
+      next if matched_secret_indices.include?(secret_index)
+      next unless color == secret_color
+
+      return secret_index
+    end
+    nil
   end
 
   # Colorizes the pins
