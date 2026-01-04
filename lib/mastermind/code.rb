@@ -12,8 +12,8 @@ class Code
   # @param [Array] rainbow_colors - an array of each color colored for nice output
   def initialize(colors, rainbow_colors)
     @code_data = {
-      colors: colors,
-      rainbow_colors: rainbow_colors
+      colors:,
+      rainbow_colors:
     }
   end
 

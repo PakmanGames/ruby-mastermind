@@ -12,7 +12,7 @@ module Pins
   def self.generate_pins(secret_code, guess)
     pins = build_pins(secret_code, guess)
     {
-      pins: pins,
+      pins:,
       rainbow_pins: colorize(pins)
     }
   end
