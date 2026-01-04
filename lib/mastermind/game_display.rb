@@ -37,7 +37,7 @@ module GameDisplay
   # @param [Board] board - the game board containing move history
   # @return [Nil] - the board is displayed
   def self.board(board)
-    board.moves.each { |move| puts "\n#{move}" }
+    board.moves.last(12).each { |move| puts "\n#{move}" }
   end
 
   # Displays the round header

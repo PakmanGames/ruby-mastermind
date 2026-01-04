@@ -25,8 +25,8 @@ module Pins
   def self.build_pins(secret_code, guess)
     secret_colors = secret_code.code_data[:colors].dup
     guess_colors = guess.code_data[:colors]
-    matched_secret_indices = []
-    matched_guess_indices = []
+    matched_secret_indices = Set.new
+    matched_guess_indices = Set.new
 
     red_pins = find_red_pins(secret_colors, guess_colors, matched_secret_indices, matched_guess_indices)
     white_pins = find_white_pins(secret_colors, guess_colors, matched_secret_indices, matched_guess_indices)

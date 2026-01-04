@@ -74,6 +74,70 @@ RSpec.describe Player do
     end
   end
 
+  describe '#prompt_for_name' do
+    context 'when player is code maker' do
+      it 'prompts with code maker role indicator' do
+        player = Player.new(false, true)
+        allow_any_instance_of(Object).to receive(:gets).and_return("Alice\n")
+        allow($stdout).to receive(:puts)
+
+        player.send(:prompt_for_name)
+
+        expect($stdout).to have_received(:puts).with("What's your name? (Code Maker)")
+      end
+
+      it 'returns the trimmed name' do
+        player = Player.new(false, true)
+        allow_any_instance_of(Object).to receive(:gets).and_return("  Bob  \n")
+        allow($stdout).to receive(:puts)
+
+        result = player.send(:prompt_for_name)
+
+        expect(result).to eq('Bob')
+      end
+    end
+
+    context 'when player is code breaker' do
+      it 'prompts with code breaker role indicator' do
+        player = Player.new(false, false)
+        allow_any_instance_of(Object).to receive(:gets).and_return("Charlie\n")
+        allow($stdout).to receive(:puts)
+
+        player.send(:prompt_for_name)
+
+        expect($stdout).to have_received(:puts).with("What's your name? (Code Breaker)")
+      end
+
+      it 'returns the trimmed name' do
+        player = Player.new(false, false)
+        allow_any_instance_of(Object).to receive(:gets).and_return("David\n")
+        allow($stdout).to receive(:puts)
+
+        result = player.send(:prompt_for_name)
+
+        expect(result).to eq('David')
+      end
+    end
+
+    it 'reads input from gets' do
+      player = Player.new(false, true)
+      allow($stdout).to receive(:puts)
+      expect_any_instance_of(Object).to receive(:gets).and_return("Eve\n")
+
+      player.send(:prompt_for_name)
+    end
+
+    it 'handles names with leading and trailing whitespace' do
+      player = Player.new(false, true)
+      allow_any_instance_of(Object).to receive(:gets).and_return("  Frank  \n")
+      allow($stdout).to receive(:puts)
+
+      result = player.send(:prompt_for_name)
+
+      expect(result).to eq('Frank')
+    end
+  end
+
   describe 'attributes' do
     it 'has a readable name attribute' do
       allow_any_instance_of(Object).to receive(:gets).and_return("Eve\n")

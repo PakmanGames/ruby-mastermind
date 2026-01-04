@@ -9,12 +9,18 @@ class Player
   # @param [Boolean] human - whether the player is human or not
   # @param [Boolean] code_maker - whether the player is a code maker or not
   def initialize(human, code_maker)
-    @name = 'Computer'
     @human = human
-    return unless human
+    @code_maker = code_maker
+    @name = human ? prompt_for_name : 'Computer'
+  end
 
-    # Prompt the player for their name
-    puts "What's your name? #{code_maker ? '(Code Maker)' : '(Code Breaker)'}"
-    @name = gets.strip.chomp
+  private
+
+  # Prompts the player for their name
+  #
+  # @return [String] the player's name
+  def prompt_for_name
+    puts "What's your name? #{@code_maker ? '(Code Maker)' : '(Code Breaker)'}"
+    gets.strip.chomp
   end
 end

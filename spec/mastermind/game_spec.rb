@@ -41,14 +41,13 @@ RSpec.describe Game do
       expect(game.current_guess.code_data[:colors]).to eq([])
     end
 
-    it 'initializes board with secret_code' do
+    it 'initializes board' do
       code_maker = instance_double('Player')
       code_breaker = instance_double('Player')
 
       game = Game.new(code_maker, code_breaker)
 
       expect(game.board).to be_a(Board)
-      expect(game.board.secret_code).to be_nil
     end
 
     it 'initializes turn as 0' do
@@ -150,18 +149,6 @@ RSpec.describe Game do
       expect(game.secret_code).to eq(secret_code)
     end
 
-    it 'sets board secret_code' do
-      code_maker = instance_double('Player', human: false)
-      code_breaker = instance_double('Player')
-      game = Game.new(code_maker, code_breaker)
-
-      secret_code = instance_double('Code')
-      allow(SecretCode).to receive(:generate_secret_code).and_return(secret_code)
-
-      game.setup_computer_secret_code
-
-      expect(game.board.secret_code).to eq(secret_code)
-    end
   end
 
   describe '#play_rounds_until_complete' do

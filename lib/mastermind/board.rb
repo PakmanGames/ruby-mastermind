@@ -2,13 +2,10 @@
 
 # Manages the game board state, tracking all moves made by the code breaker and the corresponding pins.
 class Board
-  attr_accessor :secret_code, :moves, :current_pins
+  attr_accessor :moves, :current_pins
 
   # Create a new board
-  #
-  # @param [SecretCode] secret_code - the secret code to be guessed
-  def initialize(secret_code)
-    @secret_code = secret_code
+  def initialize
     @moves = [] # History of moves
     @current_pins = Array.new(4)
   end
@@ -17,6 +14,8 @@ class Board
   #
   # @return [Boolean] true if the code breaker has won, false otherwise
   def check_winner
-    current_pins.all? { |pin| pin == :red } && current_pins.length == 4
+    return false if current_pins.nil? || current_pins.length != 4
+
+    current_pins.all? { |pin| pin == :red }
   end
 end

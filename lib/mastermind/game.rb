@@ -21,7 +21,7 @@ class Game
     @code_breaker = code_breaker
     @secret_code = nil
     @current_guess = Code.new([], [])
-    @board = Board.new(secret_code)
+    @board = Board.new
     @turn = 0
   end
 
@@ -30,6 +30,7 @@ class Game
   # @return [Nil] - the game is played until the code is broken or the turn limit is reached
   def play_game
     GameDisplay.player_matchup(code_maker, code_breaker)
+    board.moves.clear # Clear the board moves before starting a new game
     setup_secret_code
     play_rounds_until_complete
     display_game_result
@@ -56,6 +57,7 @@ class Game
     puts "Make sure you remember the code, you won't be able to see it again!"
     @secret_code = SecretCode.enter_code
     puts "\n" * 100 # Clear console to prevent code breaker from cheating
+    # TODO: system('clear') || system('cls') to clear the console instead in the future
   end
 
   # Sets up the secret code for a computer code maker
@@ -63,7 +65,6 @@ class Game
   # @return [Nil] - the secret code is set up
   def setup_computer_secret_code
     @secret_code = SecretCode.generate_secret_code
-    board.secret_code = secret_code
   end
 
   # Plays rounds until the code is broken or the turn limit is reached
@@ -89,9 +90,9 @@ class Game
   # @return [Nil] - the round is played until the code is broken or the turn limit is reached
   def play_round
     increment_turn_and_display
-    current_guess = code_breaker_guess
-    pins = generate_pins_for_guess(current_guess)
-    process_and_display_results(current_guess, pins)
+    @current_guess = code_breaker_guess
+    pins = generate_pins_for_guess(@current_guess)
+    process_and_display_results(@current_guess, pins)
   end
 
   # Increments the turn and displays the round number
