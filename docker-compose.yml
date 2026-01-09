@@ -1,0 +1,9 @@
+services:
+  mastermind:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ruby-mastermind:latest
+    stdin_open: true
+    tty: true
+    # Override command to run tests: docker-compose run --rm mastermind bundle exec rspec

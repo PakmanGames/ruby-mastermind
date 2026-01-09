@@ -1,0 +1,35 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Documentation (keep docs out of image to reduce size)
+docs/
+
+# Keep test files in image so tests can be run in Docker
+# spec/
+
+# Keep README in image for reference
+# *.md
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker files
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Temporary files
+*.log
+tmp/
+temp/
+

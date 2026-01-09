@@ -17,7 +17,24 @@ bundle exec bin/mastermind
 
 Information about the dependencies can be found in the `Gemfile`.
 
-(Note that running the project requires a Unix-based operating system or WSL)
+## Running with Docker (Cross-Platform)
+
+The project is dockerized and works on Windows, Linux, and macOS. Make sure you have [Docker](https://www.docker.com/get-started) installed.
+
+```bash
+# Build the Docker image
+docker build -t ruby-mastermind .
+
+# Run the game interactively (one-off container)
+docker run -it --rm ruby-mastermind
+
+# Or run with docker-compose (one-off container)
+docker-compose run --rm mastermind
+```
+
+**Note:** The `-it` flags are required for interactive terminal input/output, which the game needs.
+
+(Note: Without Docker, running the project requires a Unix-based operating system or WSL)
 
 ## Running the Tests
 
@@ -32,6 +49,16 @@ bundle exec rspec --format documentation
 
 # Run a specific test file
 bundle exec rspec spec/mastermind/game_spec.rb
+```
+
+### Running Tests with Docker
+
+```bash
+# Run tests in Docker
+docker run -it --rm ruby-mastermind bundle exec rspec
+
+# Or with docker-compose
+docker-compose run --rm mastermind bundle exec rspec
 ```
 
 All test files are located in the `spec/` directory, mirroring the structure of the `lib/` directory.
@@ -64,6 +91,9 @@ ruby-mastermind/
 │   └── spec_helper.rb  # RSpec configuration
 ├── Gemfile             # Ruby dependencies
 ├── Gemfile.lock        # Locked dependency versions
+├── Dockerfile          # Docker configuration for cross-platform support
+├── docker-compose.yml  # Docker Compose configuration
+├── .dockerignore       # Files to exclude from Docker build
 └── README.md           # Project documentation
 ```
 
