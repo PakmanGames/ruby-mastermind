@@ -7,7 +7,7 @@ RUN apk add --no-cache build-base bash
 
 COPY Gemfile Gemfile.lock ./
 
-RUN bundle install
+RUN bundle install --jobs 4 --retry 3
 
 COPY . .
 
