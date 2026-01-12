@@ -8,12 +8,19 @@ class Player
 
   # Create a new player
   #
-  # @param [Boolean] human - whether the player is human or not
-  # @param [Boolean] code_maker - whether the player is a code maker or not
-  def initialize(human, code_maker)
-    @human = human
-    @code_maker = code_maker
-    @name = human ? prompt_for_name : 'Computer'
+  # @param [Boolean, String] human_or_name - whether the player is human (Boolean) or the player's name (String)
+  # @param [Boolean] code_maker - whether the player is a code maker or not (optional if name provided)
+  def initialize(human_or_name, code_maker = nil)
+    if human_or_name.is_a?(String)
+      @name = human_or_name
+      @human = code_maker
+      @code_maker = nil
+    else
+      # For backward compatibility
+      @human = human_or_name
+      @code_maker = code_maker
+      @name = @human ? prompt_for_name : 'Computer'
+    end
   end
 
   # Makes a guess at the secret code.
