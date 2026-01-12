@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'code'
+require_relative 'code_generator'
 
 # Represents the secret code which will be hidden from the player as well as created to make guesses.
 # Inherits from the Code class.
@@ -9,11 +10,11 @@ class SecretCode < Code
   @colors = %i[red green blue yellow black silver magenta cyan]
   @colorized_colors = superclass.colorize(@colors).inject('-') { |acc, curr| "#{acc + curr}-" }
 
-  # Generates a random secret code using the superclass method
+  # Generates a random secret code using CodeGenerator
   #
   # @return [Code] a secret code that has just been randomly created
   def self.generate_secret_code
-    superclass.create_new_code(@colors.sample, @colors.sample, @colors.sample, @colors.sample)
+    CodeGenerator.generate_random_code
   end
 
   # Creates a code based on players input
