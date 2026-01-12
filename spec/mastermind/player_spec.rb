@@ -166,4 +166,32 @@ RSpec.describe Player do
       expect { player.human = true }.to raise_error(NoMethodError)
     end
   end
+
+  describe '#make_guess' do
+    it 'raises NotImplementedError when called on base Player class' do
+      player = Player.new(false, true)
+
+      expect { player.make_guess }.to raise_error(NotImplementedError, /must implement make_guess/)
+    end
+
+    it 'includes the class name in the error message' do
+      player = Player.new(false, true)
+
+      expect { player.make_guess }.to raise_error(NotImplementedError, /Player/)
+    end
+  end
+
+  describe '#create_secret_code' do
+    it 'raises NotImplementedError when called on base Player class' do
+      player = Player.new(false, true)
+
+      expect { player.create_secret_code }.to raise_error(NotImplementedError, /must implement create_secret_code/)
+    end
+
+    it 'includes the class name in the error message' do
+      player = Player.new(false, true)
+
+      expect { player.create_secret_code }.to raise_error(NotImplementedError, /Player/)
+    end
+  end
 end

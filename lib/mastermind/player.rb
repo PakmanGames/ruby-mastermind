@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 # Represents a player in the game, which can be either human or computer-controlled.
+# This is a base class that defines the interface for player behavior.
+# Subclasses should implement make_guess and create_secret_code methods.
 class Player
   attr_reader :name, :human
 
@@ -12,6 +14,24 @@ class Player
     @human = human
     @code_maker = code_maker
     @name = human ? prompt_for_name : 'Computer'
+  end
+
+  # Makes a guess at the secret code.
+  # Subclasses must implement this method.
+  #
+  # @return [Code] the code guessed by the player
+  # @raise [NotImplementedError] if called on base Player class
+  def make_guess
+    raise NotImplementedError, "#{self.class} must implement make_guess"
+  end
+
+  # Creates a secret code.
+  # Subclasses must implement this method.
+  #
+  # @return [Code] the secret code created by the player
+  # @raise [NotImplementedError] if called on base Player class
+  def create_secret_code
+    raise NotImplementedError, "#{self.class} must implement create_secret_code"
   end
 
   private
