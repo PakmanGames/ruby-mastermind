@@ -107,7 +107,7 @@ class Game
   #
   # @return [Code] - the code the code breaker guessed
   def code_breaker_guess
-    SecretCode.enter_code
+    code_breaker.make_guess
   end
 
   # Generates pins for the guess

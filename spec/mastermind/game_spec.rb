@@ -312,18 +312,44 @@ RSpec.describe Game do
   end
 
   describe '#code_breaker_guess' do
-    it 'calls SecretCode.enter_code' do
+    it 'calls make_guess on code_breaker' do
       code_maker = instance_double('Player')
       code_breaker = instance_double('Player')
       game = Game.new(code_maker, code_breaker)
 
       guess = instance_double('Code')
-      allow(SecretCode).to receive(:enter_code).and_return(guess)
+      allow(code_breaker).to receive(:make_guess).and_return(guess)
 
       result = game.code_breaker_guess
 
       expect(result).to eq(guess)
-      expect(SecretCode).to have_received(:enter_code)
+      expect(code_breaker).to have_received(:make_guess)
+    end
+
+    it 'works with HumanPlayer' do
+      require_relative '../../lib/mastermind/human_player'
+      allow_any_instance_of(Object).to receive(:gets).and_return("Alice\n", "red\n", "green\n", "blue\n", "yellow\n")
+      allow($stdout).to receive(:puts)
+
+      code_maker = instance_double('Player')
+      code_breaker = HumanPlayer.new(false)
+      game = Game.new(code_maker, code_breaker)
+
+      result = game.code_breaker_guess
+
+      expect(result).to be_a(Code)
+    end
+
+    it 'works with ComputerPlayer' do
+      require_relative '../../lib/mastermind/computer_player'
+      code_maker = instance_double('Player')
+      code_breaker = ComputerPlayer.new
+      game = Game.new(code_maker, code_breaker)
+
+      result = game.code_breaker_guess
+
+      expect(result).to be_a(Code)
+      expect(result.code_data[:colors].length).to eq(4)
     end
   end
 
