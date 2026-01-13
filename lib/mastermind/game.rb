@@ -41,30 +41,14 @@ class Game
   # @return [Nil] - the secret code is set up
   def setup_secret_code
     if code_maker.human
-      setup_human_secret_code
-    else
-      setup_computer_secret_code
+      puts "\n#{code_maker.name} create a secret code that #{code_breaker.name} will try to guess."
+      puts "Make sure you remember the code, you won't be able to see it again!"
     end
+    @secret_code = code_maker.create_secret_code
+    puts "\n" * 100 if code_maker.human # Clear console to prevent code breaker from cheating
+    # TODO: system('clear') || system('cls') to clear the console instead in the future
     puts "Code generated! Now let's play!"
     sleep(1)
-  end
-
-  # Sets up the secret code for a human code maker
-  #
-  # @return [Nil] - the secret code is set up
-  def setup_human_secret_code
-    puts "\n#{code_maker.name} create a secret code that #{code_breaker.name} will try to guess."
-    puts "Make sure you remember the code, you won't be able to see it again!"
-    @secret_code = SecretCode.enter_code
-    puts "\n" * 100 # Clear console to prevent code breaker from cheating
-    # TODO: system('clear') || system('cls') to clear the console instead in the future
-  end
-
-  # Sets up the secret code for a computer code maker
-  #
-  # @return [Nil] - the secret code is set up
-  def setup_computer_secret_code
-    @secret_code = SecretCode.generate_secret_code
   end
 
   # Plays rounds until the code is broken or the turn limit is reached

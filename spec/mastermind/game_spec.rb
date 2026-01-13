@@ -62,34 +62,92 @@ RSpec.describe Game do
 
   describe '#setup_secret_code' do
     context 'when code_maker is human' do
-      it 'calls setup_human_secret_code' do
-        code_maker = instance_double('Player', human: true)
-        code_breaker = instance_double('Player')
+      it 'calls create_secret_code on code_maker' do
+        code_maker = instance_double('Player', human: true, name: 'Alice')
+        code_breaker = instance_double('Player', name: 'Bob')
         game = Game.new(code_maker, code_breaker)
 
-        allow(game).to receive(:setup_human_secret_code)
+        secret_code = instance_double('Code')
+        allow(code_maker).to receive(:create_secret_code).and_return(secret_code)
         allow($stdout).to receive(:puts)
         allow(game).to receive(:sleep)
 
         game.setup_secret_code
 
-        expect(game).to have_received(:setup_human_secret_code)
+        expect(code_maker).to have_received(:create_secret_code)
+        expect(game.secret_code).to eq(secret_code)
+      end
+
+      it 'displays prompts for human code maker' do
+        code_maker = instance_double('Player', human: true, name: 'Alice')
+        code_breaker = instance_double('Player', name: 'Bob')
+        game = Game.new(code_maker, code_breaker)
+
+        allow(code_maker).to receive(:create_secret_code).and_return(instance_double('Code'))
+        allow(game).to receive(:sleep)
+        expect($stdout).to receive(:puts).with("\nAlice create a secret code that Bob will try to guess.")
+        expect($stdout).to receive(:puts).with("Make sure you remember the code, you won't be able to see it again!")
+        expect($stdout).to receive(:puts).with("\n" * 100) # Console clearing
+        expect($stdout).to receive(:puts).with("Code generated! Now let's play!")
+
+        game.setup_secret_code
+      end
+
+      it 'clears console after human creates code' do
+        code_maker = instance_double('Player', human: true, name: 'Alice')
+        code_breaker = instance_double('Player', name: 'Bob')
+        game = Game.new(code_maker, code_breaker)
+
+        allow(code_maker).to receive(:create_secret_code).and_return(instance_double('Code'))
+        allow(game).to receive(:sleep)
+        allow($stdout).to receive(:puts)
+        expect($stdout).to receive(:puts).with("\n" * 100)
+
+        game.setup_secret_code
       end
     end
 
     context 'when code_maker is computer' do
-      it 'calls setup_computer_secret_code' do
+      it 'calls create_secret_code on code_maker' do
         code_maker = instance_double('Player', human: false)
         code_breaker = instance_double('Player')
         game = Game.new(code_maker, code_breaker)
 
-        allow(game).to receive(:setup_computer_secret_code)
+        secret_code = instance_double('Code')
+        allow(code_maker).to receive(:create_secret_code).and_return(secret_code)
         allow($stdout).to receive(:puts)
         allow(game).to receive(:sleep)
 
         game.setup_secret_code
 
-        expect(game).to have_received(:setup_computer_secret_code)
+        expect(code_maker).to have_received(:create_secret_code)
+        expect(game.secret_code).to eq(secret_code)
+      end
+
+      it 'does not display prompts for computer code maker' do
+        code_maker = instance_double('Player', human: false)
+        code_breaker = instance_double('Player')
+        game = Game.new(code_maker, code_breaker)
+
+        allow(code_maker).to receive(:create_secret_code).and_return(instance_double('Code'))
+        allow(game).to receive(:sleep)
+        allow($stdout).to receive(:puts)
+        expect($stdout).not_to receive(:puts).with(/\w+ create a secret code/)
+
+        game.setup_secret_code
+      end
+
+      it 'does not clear console for computer code maker' do
+        code_maker = instance_double('Player', human: false)
+        code_breaker = instance_double('Player')
+        game = Game.new(code_maker, code_breaker)
+
+        allow(code_maker).to receive(:create_secret_code).and_return(instance_double('Code'))
+        allow(game).to receive(:sleep)
+        allow($stdout).to receive(:puts)
+        expect($stdout).not_to receive(:puts).with("\n" * 100)
+
+        game.setup_secret_code
       end
     end
 
@@ -98,57 +156,43 @@ RSpec.describe Game do
       code_breaker = instance_double('Player')
       game = Game.new(code_maker, code_breaker)
 
-      allow(game).to receive(:setup_computer_secret_code)
+      allow(code_maker).to receive(:create_secret_code).and_return(instance_double('Code'))
       allow(game).to receive(:sleep)
+      allow($stdout).to receive(:puts)
       expect($stdout).to receive(:puts).with("Code generated! Now let's play!")
 
       game.setup_secret_code
     end
-  end
 
-  describe '#setup_human_secret_code' do
-    it 'prompts code_maker to create secret code' do
-      code_maker = instance_double('Player', name: 'Alice', human: true)
+    it 'works with HumanPlayer' do
+      require_relative '../../lib/mastermind/human_player'
+      allow_any_instance_of(Object).to receive(:gets).and_return("Alice\n", "red\n", "green\n", "blue\n", "yellow\n")
+      allow($stdout).to receive(:puts)
+      allow_any_instance_of(Game).to receive(:sleep)
+
+      code_maker = HumanPlayer.new(true)
       code_breaker = instance_double('Player', name: 'Bob')
       game = Game.new(code_maker, code_breaker)
 
-      allow(SecretCode).to receive(:enter_code).and_return(instance_double('Code'))
-      allow($stdout).to receive(:puts)
+      game.setup_secret_code
 
-      game.setup_human_secret_code
-
-      expect(SecretCode).to have_received(:enter_code)
+      expect(game.secret_code).to be_a(Code)
     end
 
-    it 'sets secret_code from SecretCode.enter_code' do
-      code_maker = instance_double('Player', name: 'Alice', human: true)
-      code_breaker = instance_double('Player', name: 'Bob')
-      game = Game.new(code_maker, code_breaker)
-
-      secret_code = instance_double('Code')
-      allow(SecretCode).to receive(:enter_code).and_return(secret_code)
+    it 'works with ComputerPlayer' do
+      require_relative '../../lib/mastermind/computer_player'
       allow($stdout).to receive(:puts)
+      allow_any_instance_of(Game).to receive(:sleep)
 
-      game.setup_human_secret_code
-
-      expect(game.secret_code).to eq(secret_code)
-    end
-  end
-
-  describe '#setup_computer_secret_code' do
-    it 'generates secret code using SecretCode.generate_secret_code' do
-      code_maker = instance_double('Player', human: false)
+      code_maker = ComputerPlayer.new
       code_breaker = instance_double('Player')
       game = Game.new(code_maker, code_breaker)
 
-      secret_code = instance_double('Code')
-      allow(SecretCode).to receive(:generate_secret_code).and_return(secret_code)
+      game.setup_secret_code
 
-      game.setup_computer_secret_code
-
-      expect(game.secret_code).to eq(secret_code)
+      expect(game.secret_code).to be_a(Code)
+      expect(game.secret_code.code_data[:colors].length).to eq(4)
     end
-
   end
 
   describe '#play_rounds_until_complete' do
