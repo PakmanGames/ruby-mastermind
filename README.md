@@ -72,19 +72,25 @@ ruby-mastermind/
 ├── lib/
 │   ├── mastermind.rb   # Main module file
 │   └── mastermind/     # Core game classes
-│       ├── board.rb        # Board class - manages game board and moves
-│       ├── code.rb         # Code class - represents a code with 4 colors
-│       ├── game_display.rb # Game Display module - generates messages into the CLI
-│       ├── game.rb         # Game class - main game logic and flow
-│       ├── pins.rb         # Pins module - generates feedback pins
-│       ├── player.rb       # Player class - represents a player (human/computer)
-│       └── secret_code.rb  # SecretCode class - handles secret code generation
+│       ├── board.rb            # Board class - manages game board and moves
+│       ├── code.rb             # Code class - represents a code with 4 colors
+│       ├── code_generator.rb   # CodeGenerator class - generates random codes
+│       ├── computer_player.rb  # ComputerPlayer class - computer-controlled player
+│       ├── game_display.rb     # GameDisplay module - generates messages into the CLI
+│       ├── game.rb             # Game class - main game logic and flow
+│       ├── human_player.rb     # HumanPlayer class - human-controlled player
+│       ├── pins.rb             # Pins module - generates feedback pins
+│       ├── player.rb           # Player class - abstract base class for players
+│       └── secret_code.rb      # SecretCode class - handles secret code generation
 ├── spec/
 │   ├── mastermind/     # Test files for game classes
 │   │   ├── board_spec.rb
+│   │   ├── code_generator_spec.rb
 │   │   ├── code_spec.rb
+│   │   ├── computer_player_spec.rb
 │   │   ├── game_display_spec.rb
 │   │   ├── game_spec.rb
+│   │   ├── human_player_spec.rb
 │   │   ├── pins_spec.rb
 │   │   ├── player_spec.rb
 │   │   └── secret_code_spec.rb
@@ -115,10 +121,22 @@ The main game controller that orchestrates the entire Mastermind game. Handles g
 
 Contains logic for generating feedback pins based on the secret code and the player's guess. Generates red pins for correct colors in the correct position, and silver pins for correct colors in the wrong position. Provides formatted display of pins.
 
+### CodeGenerator
+
+Generates random 4-color codes for computer players. Contains the color palette and provides a single method for random code generation, following the Single Responsibility Principle.
+
 ### Player
 
-Represents a player in the game, which can be either human or computer-controlled. Stores the player's name and role (code maker or code breaker). Handles name input for human players.
+Abstract base class that defines the player interface with `make_guess` and `create_secret_code` methods. Uses polymorphism to allow different player types (human vs computer) to be used interchangeably in the game.
+
+### HumanPlayer
+
+Subclass of `Player` that handles human input. Prompts users for guesses and secret code creation through the terminal. Manages name collection for human players.
+
+### ComputerPlayer
+
+Subclass of `Player` that implements computer-controlled gameplay. Generates random guesses and secret codes automatically using `CodeGenerator`. Includes a 0.5s delay in guesses for a more natural feel.
 
 ### SecretCode
 
-Inherits from the `Code` class and specializes in secret code management. Handles random code generation for computer players and code input for human code makers. Manages the available color palette (red, green, blue, yellow, black, silver, magenta, cyan).
+Inherits from the `Code` class and specializes in secret code management. Handles code input for human code makers and uses `CodeGenerator` for random code generation. Manages the available color palette (red, green, blue, yellow, black, silver, magenta, cyan).
