@@ -548,39 +548,50 @@ RSpec.describe Game do
 
   describe '.check_game_mode' do
     it 'creates Human vs Human game for mode 1' do
-      allow(Player).to receive(:new).and_return(instance_double('Player'))
+      require_relative '../../lib/mastermind/human_player'
+      allow_any_instance_of(Object).to receive(:gets).and_return("Alice\n", "Bob\n")
+      allow($stdout).to receive(:puts)
 
       game = Game.check_game_mode('1')
 
       expect(game).to be_a(Game)
-      expect(Player).to have_received(:new).with(true, true).once
-      expect(Player).to have_received(:new).with(true, false).once
+      expect(game.code_maker).to be_a(HumanPlayer)
+      expect(game.code_breaker).to be_a(HumanPlayer)
+      expect(game.code_maker.human).to be true
+      expect(game.code_breaker.human).to be true
     end
 
     it 'creates Computer vs Human game for mode 2' do
-      allow(Player).to receive(:new).and_return(instance_double('Player'))
+      require_relative '../../lib/mastermind/computer_player'
+      require_relative '../../lib/mastermind/human_player'
+      allow_any_instance_of(Object).to receive(:gets).and_return("Alice\n")
+      allow($stdout).to receive(:puts)
 
       game = Game.check_game_mode('2')
 
       expect(game).to be_a(Game)
-      expect(Player).to have_received(:new).with(false, true).once
-      expect(Player).to have_received(:new).with(true, false).once
+      expect(game.code_maker).to be_a(ComputerPlayer)
+      expect(game.code_breaker).to be_a(HumanPlayer)
+      expect(game.code_maker.human).to be false
+      expect(game.code_breaker.human).to be true
     end
 
     it 'creates Computer vs Computer game for mode 3' do
-      allow(Player).to receive(:new).and_return(instance_double('Player'))
-      allow($stdout).to receive(:puts)
+      require_relative '../../lib/mastermind/computer_player'
 
       game = Game.check_game_mode('3')
 
       expect(game).to be_a(Game)
-      expect(Player).to have_received(:new).with(false, true).once
-      expect(Player).to have_received(:new).with(false, false).once
+      expect(game.code_maker).to be_a(ComputerPlayer)
+      expect(game.code_breaker).to be_a(ComputerPlayer)
+      expect(game.code_maker.human).to be false
+      expect(game.code_breaker.human).to be false
     end
 
-    it 'displays work in progress message for mode 3' do
-      allow(Player).to receive(:new).and_return(instance_double('Player'))
-      expect($stdout).to receive(:puts).with('Work in progress')
+    it 'does not display work in progress message for mode 3' do
+      require_relative '../../lib/mastermind/computer_player'
+      allow($stdout).to receive(:puts)
+      expect($stdout).not_to receive(:puts).with('Work in progress')
 
       Game.check_game_mode('3')
     end

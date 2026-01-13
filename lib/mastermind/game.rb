@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require_relative 'player'
+require_relative 'human_player'
+require_relative 'computer_player'
 require_relative 'secret_code'
 require_relative 'board'
 require_relative 'pins'
@@ -152,14 +154,13 @@ class Game
     case game_mode.to_i
     when 1
       # Human vs Human
-      Game.new(Player.new(true, true), Player.new(true, false))
+      Game.new(HumanPlayer.new(true), HumanPlayer.new(false))
     when 2
       # Computer vs Human
-      Game.new(Player.new(false, true), Player.new(true, false))
+      Game.new(ComputerPlayer.new, HumanPlayer.new(false))
     when 3
-      # Computer vs Computer (TODO: implement)
-      puts 'Work in progress'
-      Game.new(Player.new(false, true), Player.new(false, false))
+      # Computer vs Computer
+      Game.new(ComputerPlayer.new, ComputerPlayer.new)
     end
   end
 end
