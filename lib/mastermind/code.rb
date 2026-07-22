@@ -17,15 +17,13 @@ class Code
     }
   end
 
-  # Creates new code specified by each color
+  # Creates a new code from any number of colors.
+  # Accepts a variable number of colors so codes of any configured length
+  # (see GameConfig) can be built from the same factory.
   #
-  # @param [Symbol] color1 - the first color
-  # @param [Symbol] color2 - the second color
-  # @param [Symbol] color3 - the third color
-  # @param [Symbol] color4 - the fourth color
+  # @param [Array<Symbol>] colors - the colors making up the code
   # @return [Code] a new code object
-  def self.create_new_code(color1, color2, color3, color4)
-    colors = [color1, color2, color3, color4]
+  def self.create_new_code(*colors)
     rainbow_colors = colorize(colors)
     Code.new(colors, rainbow_colors)
   end

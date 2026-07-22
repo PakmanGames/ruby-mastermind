@@ -18,6 +18,35 @@ RSpec.describe Board do
       expect(board.current_pins).to eq([nil, nil, nil, nil])
       expect(board.current_pins.length).to eq(4)
     end
+
+    it 'defaults code_length to 4' do
+      board = Board.new
+
+      expect(board.code_length).to eq(4)
+    end
+
+    it 'sizes the pin row to the requested code length' do
+      board = Board.new(6)
+
+      expect(board.code_length).to eq(6)
+      expect(board.current_pins.length).to eq(6)
+    end
+  end
+
+  describe '#check_winner with a custom code length' do
+    it 'returns true when all pins are red and length matches the code length' do
+      board = Board.new(6)
+      board.current_pins = %i[red red red red red red]
+
+      expect(board.check_winner).to be true
+    end
+
+    it 'returns false when the pin count does not match the code length' do
+      board = Board.new(6)
+      board.current_pins = %i[red red red red]
+
+      expect(board.check_winner).to be false
+    end
   end
 
   describe '#check_winner' do

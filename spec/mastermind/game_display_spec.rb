@@ -161,7 +161,7 @@ RSpec.describe GameDisplay do
 
     it 'displays game rules' do
       expect { GameDisplay.welcome_message }
-        .to output(/12 turns to break a code/).to_stdout
+        .to output(/turns to break a code/).to_stdout
     end
 
     it 'displays game type options' do

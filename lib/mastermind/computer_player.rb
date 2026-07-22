@@ -3,6 +3,7 @@
 require_relative 'player'
 require_relative 'code_generator'
 require_relative 'secret_code'
+require_relative 'game_config'
 
 # Represents a computer player in the game.
 # Handles automatic code generation for making guesses and creating secret codes.
@@ -13,15 +14,17 @@ class ComputerPlayer < Player
 
   # Makes a guess by generating a random code
   #
+  # @param [Integer] code_length - number of colors the guess should contain
   # @return [Code] the code guessed by the computer player
-  def make_guess
-    CodeGenerator.generate_random_code
+  def make_guess(code_length = GameConfig::DEFAULT_CODE_LENGTH)
+    CodeGenerator.generate_random_code(code_length)
   end
 
   # Creates a secret code by generating a random code
   #
+  # @param [Integer] code_length - number of colors the code should contain
   # @return [Code] the secret code created by the computer player
-  def create_secret_code
-    SecretCode.generate_secret_code
+  def create_secret_code(code_length = GameConfig::DEFAULT_CODE_LENGTH)
+    SecretCode.generate_secret_code(code_length)
   end
 end

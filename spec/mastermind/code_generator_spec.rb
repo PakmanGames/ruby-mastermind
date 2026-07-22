@@ -12,10 +12,18 @@ RSpec.describe CodeGenerator do
       expect(code).to be_a(Code)
     end
 
-    it 'generates a code with exactly 4 colors' do
+    it 'generates a code with exactly 4 colors by default' do
       code = CodeGenerator.generate_random_code
 
       expect(code.code_data[:colors].length).to eq(4)
+    end
+
+    it 'generates a code of the requested length' do
+      [4, 5, 6, 8].each do |length|
+        code = CodeGenerator.generate_random_code(length)
+
+        expect(code.code_data[:colors].length).to eq(length)
+      end
     end
 
     it 'uses colors from the available color palette' do

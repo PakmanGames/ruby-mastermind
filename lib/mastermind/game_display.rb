@@ -55,7 +55,7 @@ module GameDisplay
   # @return [Nil] - the welcome message is displayed
   def self.welcome_message
     puts 'Welcome to Mastermind!'
-    puts 'The code breaker has 12 turns to break a code the code maker creates.'
+    puts 'The code breaker gets a set number of turns to break a code the code maker creates.'
     puts 'Which type of game do you want to play?'
     puts '(Note that the first player will always be the code maker)'
     puts 'Type the corresponding number to choose a game type: '

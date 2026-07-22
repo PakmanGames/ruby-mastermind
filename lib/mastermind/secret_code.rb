@@ -2,6 +2,7 @@
 
 require_relative 'code'
 require_relative 'code_generator'
+require_relative 'game_config'
 
 # Represents the secret code which will be hidden from the player as well as created to make guesses.
 # Inherits from the Code class.
@@ -12,25 +13,28 @@ class SecretCode < Code
 
   # Generates a random secret code using CodeGenerator
   #
+  # @param [Integer] code_length - number of colors in the code
   # @return [Code] a secret code that has just been randomly created
-  def self.generate_secret_code
-    CodeGenerator.generate_random_code
+  def self.generate_secret_code(code_length = GameConfig::DEFAULT_CODE_LENGTH)
+    CodeGenerator.generate_random_code(code_length)
   end
 
   # Creates a code based on players input
   #
+  # @param [Integer] code_length - number of colors the player must enter
   # @return [Code] a code created by the player
-  def self.enter_code
-    display_color_options
-    code = collect_user_colors
+  def self.enter_code(code_length = GameConfig::DEFAULT_CODE_LENGTH)
+    display_color_options(code_length)
+    code = collect_user_colors(code_length)
     create_new_code(code)
   end
 
   # Displays the color options to the player
   #
+  # @param [Integer] code_length - number of colors the code will contain
   # @return [Nil]
-  def self.display_color_options
-    puts 'You can create a code from 4 of the following colors: '
+  def self.display_color_options(code_length = GameConfig::DEFAULT_CODE_LENGTH)
+    puts "You can create a code from #{code_length} of the following colors: "
     puts @colorized_colors
     sleep(0.5)
     puts "\n"
@@ -38,11 +42,12 @@ class SecretCode < Code
 
   # Collects the user's colors
   #
+  # @param [Integer] code_length - number of colors to collect
   # @return [Array] an array of strings representing the colors
-  def self.collect_user_colors
+  def self.collect_user_colors(code_length = GameConfig::DEFAULT_CODE_LENGTH)
     code = []
     color = String.new
-    until @colors.include?(color.to_sym) && code.length == 4
+    until @colors.include?(color.to_sym) && code.length == code_length
       prompt_for_color
       color = gets.chomp
       code.push(color) if @colors.include?(color.to_sym)

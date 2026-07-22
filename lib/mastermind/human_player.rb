@@ -2,6 +2,7 @@
 
 require_relative 'player'
 require_relative 'secret_code'
+require_relative 'game_config'
 
 # Represents a human player in the game.
 # Handles user input for making guesses and creating secret codes.
@@ -17,16 +18,18 @@ class HumanPlayer < Player
 
   # Makes a guess by prompting the user for input
   #
+  # @param [Integer] code_length - number of colors the guess should contain
   # @return [Code] the code guessed by the human player
-  def make_guess
-    SecretCode.enter_code
+  def make_guess(code_length = GameConfig::DEFAULT_CODE_LENGTH)
+    SecretCode.enter_code(code_length)
   end
 
   # Creates a secret code by prompting the user for input
   #
+  # @param [Integer] code_length - number of colors the code should contain
   # @return [Code] the secret code created by the human player
-  def create_secret_code
-    SecretCode.enter_code
+  def create_secret_code(code_length = GameConfig::DEFAULT_CODE_LENGTH)
+    SecretCode.enter_code(code_length)
   end
 
   private

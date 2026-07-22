@@ -7,23 +7,26 @@ require_relative 'secret_code'
 require_relative 'board'
 require_relative 'pins'
 require_relative 'game_display'
+require_relative 'game_config'
 
 # Main mastermind game.
 # Holds the players, board state, turn count, guess state, and secret code.
 class Game
-  attr_reader :code_maker, :code_breaker
+  attr_reader :code_maker, :code_breaker, :config
   attr_accessor :secret_code, :current_guess, :board, :turn
 
   # Create new instance of Game
   #
   # @param [Player] code_maker - the player who creates the secret code
   # @param [Player] code_breaker - the player who tries to break the secret code
-  def initialize(code_maker, code_breaker)
+  # @param [GameConfig] config - code length and turn limit for this game
+  def initialize(code_maker, code_breaker, config = GameConfig.new)
     @code_maker = code_maker
     @code_breaker = code_breaker
+    @config = config
     @secret_code = nil
     @current_guess = Code.new([], [])
-    @board = Board.new
+    @board = Board.new(config.code_length)
     @turn = 0
   end
 
@@ -42,22 +45,27 @@ class Game
   #
   # @return [Nil] - the secret code is set up
   def setup_secret_code
-    if code_maker.human
-      puts "\n#{code_maker.name} create a secret code that #{code_breaker.name} will try to guess."
-      puts "Make sure you remember the code, you won't be able to see it again!"
-    end
-    @secret_code = code_maker.create_secret_code
+    announce_human_code_maker if code_maker.human
+    @secret_code = code_maker.create_secret_code(config.code_length)
     puts "\n" * 100 if code_maker.human # Clear console to prevent code breaker from cheating
     # TODO: system('clear') || system('cls') to clear the console instead in the future
     puts "Code generated! Now let's play!"
     sleep(1)
   end
 
+  # Tells a human code maker to create a code the code breaker won't see
+  #
+  # @return [Nil]
+  def announce_human_code_maker
+    puts "\n#{code_maker.name} create a secret code that #{code_breaker.name} will try to guess."
+    puts "Make sure you remember the code, you won't be able to see it again!"
+  end
+
   # Plays rounds until the code is broken or the turn limit is reached
   #
   # @return [Nil] - the rounds are played until the code is broken or the turn limit is reached
   def play_rounds_until_complete
-    play_round until board.check_winner || turn == 12
+    play_round until board.check_winner || turn >= config.turn_limit
   end
 
   # Displays the game result
@@ -66,7 +74,7 @@ class Game
   def display_game_result
     if board.check_winner
       GameDisplay.win_message(code_breaker, turn)
-    elsif turn == 12
+    elsif turn >= config.turn_limit
       GameDisplay.loss_message(secret_code)
     end
   end
@@ -93,7 +101,7 @@ class Game
   #
   # @return [Code] - the code the code breaker guessed
   def code_breaker_guess
-    code_breaker.make_guess
+    code_breaker.make_guess(config.code_length)
   end
 
   # Generates pins for the guess
@@ -131,7 +139,8 @@ class Game
   def self.choose_game
     GameDisplay.welcome_message
     game_mode = collect_game_mode_choice
-    check_game_mode(game_mode)
+    config = GameConfig.collect
+    check_game_mode(game_mode, config)
   end
 
   # Collects the game mode choice
@@ -149,18 +158,19 @@ class Game
   # Creates the game based on the selected game mode
   #
   # @param [String] game_mode - the chosen game mode
+  # @param [GameConfig] config - code length and turn limit for this game
   # @return [Game] - the game object
-  def self.check_game_mode(game_mode)
+  def self.check_game_mode(game_mode, config = GameConfig.new)
     case game_mode.to_i
     when 1
       # Human vs Human
-      Game.new(HumanPlayer.new(true), HumanPlayer.new(false))
+      Game.new(HumanPlayer.new(true), HumanPlayer.new(false), config)
     when 2
       # Computer vs Human
-      Game.new(ComputerPlayer.new, HumanPlayer.new(false))
+      Game.new(ComputerPlayer.new, HumanPlayer.new(false), config)
     when 3
       # Computer vs Computer
-      Game.new(ComputerPlayer.new, ComputerPlayer.new)
+      Game.new(ComputerPlayer.new, ComputerPlayer.new, config)
     end
   end
 end

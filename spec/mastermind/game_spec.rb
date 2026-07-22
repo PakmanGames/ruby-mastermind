@@ -489,6 +489,7 @@ RSpec.describe Game do
     it 'displays welcome message' do
       allow(GameDisplay).to receive(:welcome_message)
       allow(Game).to receive(:collect_game_mode_choice).and_return('1')
+      allow(GameConfig).to receive(:collect).and_return(instance_double('GameConfig'))
       allow(Game).to receive(:check_game_mode).and_return(instance_double('Game'))
 
       Game.choose_game
@@ -499,6 +500,7 @@ RSpec.describe Game do
     it 'collects game mode choice' do
       allow(GameDisplay).to receive(:welcome_message)
       allow(Game).to receive(:collect_game_mode_choice).and_return('1')
+      allow(GameConfig).to receive(:collect).and_return(instance_double('GameConfig'))
       allow(Game).to receive(:check_game_mode).and_return(instance_double('Game'))
 
       Game.choose_game
@@ -506,16 +508,29 @@ RSpec.describe Game do
       expect(Game).to have_received(:collect_game_mode_choice)
     end
 
-    it 'checks game mode and returns game' do
-      game = instance_double('Game')
+    it 'collects game configuration' do
       allow(GameDisplay).to receive(:welcome_message)
       allow(Game).to receive(:collect_game_mode_choice).and_return('1')
+      allow(GameConfig).to receive(:collect).and_return(instance_double('GameConfig'))
+      allow(Game).to receive(:check_game_mode).and_return(instance_double('Game'))
+
+      Game.choose_game
+
+      expect(GameConfig).to have_received(:collect)
+    end
+
+    it 'checks game mode with the collected config and returns game' do
+      game = instance_double('Game')
+      config = instance_double('GameConfig')
+      allow(GameDisplay).to receive(:welcome_message)
+      allow(Game).to receive(:collect_game_mode_choice).and_return('1')
+      allow(GameConfig).to receive(:collect).and_return(config)
       allow(Game).to receive(:check_game_mode).and_return(game)
 
       result = Game.choose_game
 
       expect(result).to eq(game)
-      expect(Game).to have_received(:check_game_mode).with('1')
+      expect(Game).to have_received(:check_game_mode).with('1', config)
     end
   end
 
@@ -595,5 +610,67 @@ RSpec.describe Game do
 
       Game.check_game_mode('3')
     end
+
+    it 'passes the config through to the created game' do
+      require_relative '../../lib/mastermind/computer_player'
+      config = GameConfig.new(code_length: 6, turn_limit: 10)
+
+      game = Game.check_game_mode('3', config)
+
+      expect(game.config).to eq(config)
+      expect(game.board.code_length).to eq(6)
+    end
+  end
+
+  describe 'configuration' do
+    describe '#initialize' do
+      it 'defaults to a standard GameConfig' do
+        game = Game.new(instance_double('Player'), instance_double('Player'))
+
+        expect(game.config).to be_a(GameConfig)
+        expect(game.board.code_length).to eq(4)
+      end
+
+      it 'sizes the board to the config code length' do
+        config = GameConfig.new(code_length: 6, turn_limit: 10)
+
+        game = Game.new(instance_double('Player'), instance_double('Player'), config)
+
+        expect(game.board.code_length).to eq(6)
+      end
+    end
+
+    describe '#play_rounds_until_complete' do
+      it 'stops when turn reaches the configured turn limit' do
+        config = GameConfig.new(code_length: 4, turn_limit: 10)
+        game = Game.new(instance_double('Player'), instance_double('Player'), config)
+        game.turn = 9
+
+        allow(Kernel).to receive(:puts)
+        allow(game.board).to receive(:check_winner).and_return(false)
+        allow(game).to receive(:play_round) { game.turn += 1 }
+
+        game.play_rounds_until_complete
+
+        expect(game.turn).to eq(10)
+      end
+    end
+
+    describe '#display_game_result' do
+      it 'displays loss message when the configured turn limit is reached' do
+        config = GameConfig.new(turn_limit: 10)
+        game = Game.new(instance_double('Player'), instance_double('Player'), config)
+        game.turn = 10
+        game.secret_code = instance_double('Code')
+
+        allow(game.board).to receive(:check_winner).and_return(false)
+        allow(GameDisplay).to receive(:loss_message)
+
+        game.display_game_result
+
+        expect(GameDisplay).to have_received(:loss_message)
+      end
+    end
+
   end
 end
